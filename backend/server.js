@@ -10,11 +10,14 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-// Kết nối MongoDB Atlas
+// Kết nối MongoDB Atlas kèm log chi tiết lỗi
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/235022_TaAnhKiet';
 mongoose.connect(MONGO_URI)
   .then(() => console.log('MongoDB connected successfully'))
-  .catch(err => console.log('MongoDB connection error: ', err));
+  .catch(err => {
+    console.error('CHI TIET LOI MONGODB:', err.message);
+    console.error('Error code:', err.code);
+  });
 
 // Cập nhật Schema khớp với giao diện nhập sách (bookId, title, author, genre, quantity)
 const BookSchema = new mongoose.Schema({
