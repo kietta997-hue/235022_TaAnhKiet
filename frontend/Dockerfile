@@ -1,11 +1,16 @@
-# Sử dụng Nginx để phục vụ trực tiếp thư mục mã nguồn frontend
+# Giai đoạn 1: Build ứng dụng React với Node 20
+FROM node:20-alpine AS build
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+RUN npm run build
+
+# Giai đoạn 2: Phục vụ bằng Nginx
 FROM nginx:alpine
-
-# Copy toàn bộ mã nguồn frontend vào thư mục mặc định của Nginx
-COPY . /usr/share/nginx/html
-
-# Mở cổng 80
+# Xóa sạch trang HTML mặc định của Nginx để không bị ghi đè/trùng lặp
+RUN rm -rf /usr/share/nginx/html/*
+# Copy các file sau khi build (thư mục dist) vào thư mục của Nginx
+COPY --from=build /app/dist /usr/share/nginx/html
 EXPOSE 80
-
-# Chạy Nginx
 CMD ["nginx", "-g", "daemon off;"]
