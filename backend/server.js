@@ -1,4 +1,6 @@
-const crypto = require('crypto'); // <-- Thêm dòng này để khắc phục triệt để lỗi crypto trên Render
+const crypto = require('crypto');
+global.crypto = crypto; // <-- Bắt buộc gán vào global để thư viện MongoDB trên Render nhận diện được
+
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
