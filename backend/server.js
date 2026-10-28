@@ -1,6 +1,6 @@
 const crypto = require('crypto');
 global.crypto = crypto;
-globalThis.crypto = crypto; // Thêm dòng này để tương thích hoàn toàn với driver MongoDB mới
+globalThis.crypto = crypto; // Đảm bảo tương thích hoàn toàn với MongoDB driver mới trên Render
 
 const express = require('express');
 const mongoose = require('mongoose');
@@ -18,11 +18,11 @@ mongoose.connect(MONGO_URI)
 
 // Cập nhật Schema khớp với giao diện nhập sách (bookId, title, author, genre, quantity)
 const BookSchema = new mongoose.Schema({
-  bookId: { type: String, unique: true, required: true }, // Mã sách (đảm bảo không trùng)
-  title: { type: String, required: true },                 // Tên sách
-  author: String,                                          // Tác giả
-  genre: String,                                           // Thể loại
-  quantity: Number                                         // Số lượng
+  bookId: { type: String, unique: true, required: true },
+  title: { type: String, required: true },
+  author: String,
+  genre: String,
+  quantity: Number
 });
 
 const Book = mongoose.model('Book', BookSchema, 'books');
@@ -47,7 +47,6 @@ app.post('/api/books', async (req, res) => {
   try {
     const { bookId } = req.body;
     
-    // Kiểm tra xem bookId đã tồn tại trong database chưa
     const existingBook = await Book.findOne({ bookId });
     if (existingBook) {
       return res.status(400).json({ error: 'Mã bookId đã tồn tại!' });
